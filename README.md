@@ -15,8 +15,10 @@ Input
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Resoved Issues: 
+
 1. Binary search returning first match but not occurance of the same word. eg. There is multiple occurance for sim but it returing only first one. [Solved]
 
 2. Binary search not return results for all matches. eg. SIM, Is, Yeah, course [Solved: Sorting was not properly made]
 
 3. Highlighter of the words after sorting [Solved 29Mar/6:30AM]
+4. Partial and full text search is not working as we implemented the binary search to match the complete text string [Solved]
