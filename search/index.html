@@ -429,12 +429,12 @@
         for (var p = 0; p < len; p++) {
 
             var tempDom = '<div class="sec" data-id="' + sortedSearchedInfo[p].match_score + '">\
-                 <div class="ques">' + sDataJson[sortedSearchedInfo[p].q_id].question + '</div>\
-                 <div class="ans">' + sDataJson[sortedSearchedInfo[p].q_id].answer[1] + '</div>\
-                 <div class="ans">' + sortedSearchedInfo[p].match_score + '</div>\
+                 <div class="ques"><b>Q: </b>' + sDataJson[sortedSearchedInfo[p].q_id].question + '</div>\
+                 <div class="ans"><b>A: </b>' + sDataJson[sortedSearchedInfo[p].q_id].answer[1] + '</div>\
+                 <div class="ans"><b>R: </b>' + sortedSearchedInfo[p].match_score + '</div>\
               </div>';
             for (var i = 0, iLan = searchItems.length; i < iLan; i++) {
-                tempDom = tempDom.replace(new RegExp(" " + searchItems[i] + "", "ig"), function(match) {
+                tempDom = tempDom.replace(new RegExp(" "+searchItems[i], "ig"), function(match) {
                     return ' <span class="hghlght">' + match.trim() + '</span>';
                 });
             }
@@ -473,7 +473,7 @@
                     return keyArr;
                 } else if (array[mid + 1] && isCaseInsensitive(caseInsensitive, array[mid + 1]).indexOf(key) > -1) {
                     for (var i = 1; i < len; i++) {
-                        if (array[mid + 1] && key != isCaseInsensitive(caseInsensitive, array[mid + i])) {
+                        if (array[mid + 1] && isCaseInsensitive(caseInsensitive, array[mid + i]).indexOf(key) == -1) {
                             break;
                         } else {
                             keyArr.push(mid + i);
@@ -486,7 +486,7 @@
                 } else if (array[mid - 1] && isCaseInsensitive(caseInsensitive, array[mid - 1]).indexOf(key) > -1) {
                     for (var i = 1; i < len; i++) {
 
-                        if (key != isCaseInsensitive(caseInsensitive, array[mid - i])) {
+                        if (isCaseInsensitive(caseInsensitive, array[mid - i]).indexOf(key) == -1) {
                             break;
                         } else {
                             keyArr.push(mid - i);
