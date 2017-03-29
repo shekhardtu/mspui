@@ -4,7 +4,9 @@ Issues to resolve
 3. Relevence score still not full proof. Need to cross check [Product]
 4. Take into consideration the question and answer weightage [Product]
 5. Show only those answers which contains the search keyword. Rightnow it is showing only first one after overall question & answer's keywords match score. 
+
 6. Not giving any specific weightage to sequential search keywords. Needs to be done.
+
 
 
 
