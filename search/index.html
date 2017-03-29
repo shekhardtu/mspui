@@ -72,9 +72,19 @@
     
     .timeTaken {
         border: 1px solid #ddd;
+        font-size: 12px;
     }
-    .timeTaken:after {
-        content:"0";
+    
+    .js-search-time,
+    .js-sort-time,
+    .js-total-time,
+    .js-dombuild-time {
+        content: "0";
+        border: 1px solid #ddd;
+        display: inline-block;
+        margin-left: 5px;
+        padding: 0 2px;
+        font-weight: 600;
     }
     </style>
     <div class="search-form">
@@ -107,8 +117,12 @@
             <input type="number" class="min_rel" />
         </div>
         <div>
-            <label>Time taken to show search result</label>
-            <div class="timeTaken"></div>
+            <div class="timeTaken">Time taken to show search result
+                <div class="search-time">To search<span class="js-search-time"></span></div>
+                <div class="sort-time">To sort<span class="js-sort-time"></span></div>
+                <div class="dombuild-time">To DOM building<span class="js-dombuild-time"></span></div>
+                <div class="total-time">Overall<span class="js-total-time"></span></div>
+            </div>
         </div>
     </div>
     <div class="search-wrpr">
@@ -271,12 +285,11 @@
 
     var timeout;
     $(document).on("input", ".search", function() {
-        window.startTime = Date.now();
-
         $this = $(this);
         clearTimeout(timeout);
         $(".js-sec-wrpr-res").html('');
         timeout = setTimeout(function() {
+            window.startTime = Date.now();
             var term = $this.val().trim().replace(/[^a-zA-Z0-9' ]/g, "");
             newSearch(term);
         }, 200);
@@ -284,9 +297,33 @@
     });
 
     var newSearch = function(terms) {
+
+        // Searching and matching score [Start]
+        var searchStartTime = Date.now();
         var termArr = terms.split(" ");
         var resultArr = getSearchResult(termArr, builtData);
-        $.isEmptyObject(resultArr) ? "" : processSearch(resultArr, termArr);
+        var searchEndTime = Date.now();
+        var searchTime = (searchEndTime - searchStartTime) / 1000;
+        // Searching and matching score [End]
+
+
+        // Dom Building time [Start]
+        var dom = $.isEmptyObject(resultArr) ? "" : buildDom(resultArr, termArr);
+        $(".sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time").html('');
+        $(".js-sec-wrpr-res").append(dom);
+        var domBuildEndTime = Date.now();
+        var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
+        // Dom Building time [End]
+
+
+        var processEndTime = Date.now();
+
+        var totalTimeTaken = (processEndTime - startTime) / 1000;
+        var sortingTime = (sortingEndTime - sortingStartTime) / 1000
+        $(".js-search-time").append(searchTime);
+        $(".js-dombuild-time").append(domBuildTime);
+        $(".js-sort-time").append(sortingTime);
+        $(".js-total-time").append(totalTimeTaken);
         return true;
     };
 
@@ -386,33 +423,6 @@
     }
 
 
-    function processSearch(resultArr, searchItems) {
-        var processStartTime = Date.now();
-        var dom = buildDom(resultArr, searchItems);
-        $(".sec-wrpr-res, .timeTaken").html('');
-        $(".js-sec-wrpr-res").append(dom);
-
-        var processEndTime = Date.now();
-        $(".timeTaken").append((processEndTime - startTime) / 1000);
-
-        // for (var i = 0; i <= resultArr.length; i++) {
-        //     scoreResultInfo(resultArr);
-        // }
-
-
-        // var processEndTime = Date.now();
-        // console.log("Search Time: " + ((processEndTime - processStartTime) / 1000));
-
-        // // sortQuestions();
-
-        // var sortEndTime = Date.now();
-        // console.log("Sort Time: " + ((sortEndTime - processEndTime) / 1000));
-
-        // //highlightText(searchItems);
-        // var highlightTime = Date.now();
-        // console.log("Highlight Time: " + ((highlightTime - sortEndTime) / 1000));
-    }
-
     var sortQuestionsAns = function(resultArr) {
         resultArr.sort(function(a, b) {
             return b.match_score - a.match_score
@@ -420,23 +430,12 @@
         return resultArr;
     }
 
-    var highlightText = function(searchItems) {
-        for (var i = 0; i < searchItems.length; i++) {
-            $(".sec-wrpr-res .sec").children().each(function() {
-                var text = " " + $(this).html();
-                text = text.replace(new RegExp(" " + searchItems[i], "ig"), function(match) {
-
-                    return ' <span class="hghlght">' + match.trim() + '</span>';
-                });
-                $(this).html(text.trim());
-            });
-        }
-    }
-
     function buildDom(resultArr, searchItems) {
-
+        window.sortingStartTime = Date.now();
         var sortedSearchedInfo = sortQuestionsAns(resultArr); //resultArr; 
-        //sortedByScore(priorityArr);
+        window.sortingEndTime = Date.now();
+
+        window.domBuildStartTime = Date.now();
         var len = sortedSearchedInfo.length;
         var dom = "";
 
