@@ -272,7 +272,7 @@
         return searchArr;
     }
 
-    
+
 
 
     function sortedByWord(searchArray) {
@@ -303,8 +303,9 @@
         $(".js-sec-wrpr-res").html('');
         timeout = setTimeout(function() {
             window.startTime = performance.now();
-            var term = $this.val().trim().replace(/[^a-zA-Z0-9' ]/g, "");
-            newSearch(term);
+            var term = $this.val().trim();
+            newSearch(term)
+
         }, 200);
 
     });
@@ -313,7 +314,12 @@
 
         // Searching and matching score [Start]
         var searchStartTime = performance.now();
-        var termArr = terms.split(" ");
+        var termArr = terms.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/[\s\t\r\n]+/g, " ").split(" ").reduce(function(a, v) {
+            if (v.length > 2 || (v === v.toUpperCase() && v.length > 1)) {
+                a.push(v);
+            }
+            return a;
+        }, []);
         var resultArr = getSearchResult(termArr, builtData);
         var searchEndTime = performance.now();
         var searchTime = (searchEndTime - searchStartTime) / 1000;
@@ -457,7 +463,7 @@
         return resultArr;
     }
 
-   
+
 
     function buildDom(resultArr, searchItems) {
         window.sortingStartTime = performance.now();
@@ -473,10 +479,12 @@
         for (var p = 0; p < len; p++) {
             question = sDataJson[sortedSearchedInfo[p].q_id].question;
             var ans_group = sortedSearchedInfo[p].a_id ? (sortedSearchedInfo[p].a_id).split("|") : 0;
-            for (var i = 0, ilen = ans_group.length; i < ilen; i++) {
-                var ans_id = ans_group[i] ? ans_group[i].split("-") : 0;
-                answer += '<div class="ans"><b>A: ' + ans_id[1] + '</b> ' + sDataJson[sortedSearchedInfo[p].q_id].answer[ans_id[1]] + '</div>';
 
+
+            for (var i = 0, ilen = ans_group.length; i < ilen; i++) {
+                var ans_id = ans_group[i] ? ans_group[i].split("-") : "";
+
+                answer += '<div class="ans"><b>A: ' + ans_id[1] + '</b> ' + sDataJson[sortedSearchedInfo[p].q_id].answer[ans_id[1]] + '</div>';
             }
 
 
@@ -484,7 +492,9 @@
                 question = question && question.replace(new RegExp(searchItems[i], "ig"), function(match) {
                     return '<span class="hghlght">' + match.trim() + '</span>';
                 });
-                answer = answer && answer.replace(new RegExp(searchItems[i], "ig"), function(match) { return '<span class="hghlght">' + match.trim() + '</span>'; });
+                answer = answer && answer.replace(new RegExp(searchItems[i], "ig"), function(match) {
+                    return '<span class="hghlght">' + match.trim() + '</span>';
+                });
 
             }
 
@@ -495,6 +505,8 @@
               </div>';
 
             dom += tempDom;
+            answer = "";
+            question = "";
         }
 
         return dom;
