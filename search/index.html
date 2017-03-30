@@ -62,8 +62,9 @@
     }
     
     .search-form div {
-        padding: 10px 10px;
+        padding: 5px 10px;
         display: inline-block;
+        box-sizing: border-box;
     }
     
     .search-form div:first-child {
@@ -86,42 +87,83 @@
         padding: 0 2px;
         font-weight: 600;
     }
+    
+    .col-2,
+    .col-3,
+    .col-4 {
+        display: inline-block;
+    }
+    
+    .col-3 {
+        width: 30%;
+    }
+    
+    .col-2 {
+        width: 49%;
+    }
+    
+    .col-1 {
+        width: 100%;
+        display: block !important;
+    }
+    
+    input {
+        width: auto;
+        padding: 2px 3px;
+    }
     </style>
     <div class="search-form">
-        <div>
-            <label>Full Match</label>
-            <input type="number" class="full" />
+        <div class="col-3">
+            <div class="col-1">
+                <label>Full Match</label>
+                <input type="number" class="full" />
+            </div>
+            <div class="col-1">
+                or
+            </div>
+            <div class="col-1">
+                <label>Partial Match</label>
+                <input type="number" class="partial" />
+            </div>
         </div>
-        <div>
-            <label>Partial Match</label>
-            <input type="number" class="partial" />
+        <div class="col-3">
+            <div class="col-1">
+                <label>Unique Match</label>
+                <input type="number" class="unique" />
+            </div>
+            <div class="col-1">
+                or
+            </div>
+            <div class="col-1">
+                <label>Repeat Word</label>
+                <input type="number" class="repeat" />
+            </div>
         </div>
-        <div>
-            <label>Unique Match</label>
-            <input type="number" class="unique" />
+        <div class="col-3">
+            <div class="col-1">
+                <label>In Sequence</label>
+                <input type="number" class="sequence" />
+            </div>
+            <div class="col-1">
+                and
+            </div>
+            <div class="col-1">
+                <label>Case Sensitive Match</label>
+                <input type="number" class="case_sensitive" />
+            </div>
         </div>
-        <div>
-            <label>Repeat Word</label>
-            <input type="number" class="repeat" />
-        </div>
-        <div>
-            <label>In Sequence</label>
-            <input type="number" class="sequence" />
-        </div>
-        <div>
-            <label>Case Sensitive Match</label>
-            <input type="number" class="case_sensitive" />
-        </div>
-        <div>
-            <label>Minimum Relevance Score</label>
-            <input type="number" class="min_rel" />
-        </div>
-        <div>
-            <div class="timeTaken">Time taken (in Milliseconds)
-                <div class="search-time">To search<span class="js-search-time"></span></div>
-                <div class="sort-time">To sort<span class="js-sort-time"></span></div>
-                <div class="dombuild-time">To DOM building<span class="js-dombuild-time"></span></div>
-                <div class="total-time">Overall<span class="js-total-time"></span></div>
+        <div class="col-1">
+            <div class="col-2">
+                <label>Minimum Relevance Score</label>
+                <input type="number" class="min_rel" />
+            </div>
+            <div class="col-2">
+                <div class="timeTaken">Time taken (in Milliseconds)
+                    <div class="search-time">To search<span class="js-search-time"></span></div>
+                    <div class="sort-time">To sort<span class="js-sort-time"></span></div>
+                    <div class="dombuild-time">To DOM building<span class="js-dombuild-time"></span></div>
+                    <div class="total-time">Overall<span class="js-total-time"></span></div>
+                </div>
             </div>
         </div>
     </div>
@@ -337,13 +379,13 @@
 
 
         var processEndTime = performance.now();
-
         var totalTimeTaken = (processEndTime - startTime) / 1000;
         var sortingTime = (sortingEndTime - sortingStartTime) / 1000
         $(".js-search-time").append(searchTime.toFixed(4));
         $(".js-dombuild-time").append(domBuildTime.toFixed(4));
         $(".js-sort-time").append(sortingTime.toFixed(4));
         $(".js-total-time").append(totalTimeTaken.toFixed(4));
+
         return true;
     };
 
