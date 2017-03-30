@@ -337,7 +337,6 @@
 
 
 
-
     var timeout;
     $(document).on("input", ".search", function() {
         $this = $(this);
@@ -354,7 +353,7 @@
                 return a;
             }, []);
 
-            if (termArr) {
+            if (termArr.length > 0) {
                 newSearch(termArr);
 
             } else {
@@ -366,11 +365,10 @@
 
     });
 
-    var newSearch = function(terms) {
+    function newSearch(termArr) {
 
         // Searching and matching score [Start]
         var searchStartTime = performance.now();
-
         var resultArr = getSearchResult(termArr, builtData);
         var searchEndTime = performance.now();
         var searchTime = (searchEndTime - searchStartTime) / 1000;
@@ -378,10 +376,10 @@
 
 
         // Dom Building time [Start]
-        var dom = $.isEmptyObject(resultArr) ? "" : buildDom(resultArr, termArr);
+        var dom = resultArr.length && buildDom(resultArr, termArr);
         $(".sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time").html('');
         $(".js-sec-wrpr-res").append(dom);
-        //highlightText(searchItems);
+        
         var domBuildEndTime = performance.now();
         var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
         // Dom Building time [End]
@@ -403,18 +401,14 @@
             termArr = termArr,
             resultArr = [],
             tempObj = [];
-
         if (termArr.length > 0) {
             for (var i = 0, iLen = termArr.length; i < iLen; i++) {
                 termArrIndex = binarySearch(builtData, termArr[i], true, "multiple");
                 if (termArrIndex !== -1 && termArrIndex.length >= 1) {
-
                     $.each(termArrIndex, function(indx, vlu) { // if results are comming in array ie. multiple occurrence of a word;
-
                         var q_id = builtData[vlu].q_id;
                         var a_id = builtData[vlu].a_id;
                         //Pass only array of object of highest match_score question and answer;
-
                         sDataJson[q_id].word_occurrence = sDataJson[q_id].word_occurrence ? ++sDataJson[q_id].word_occurrence : 1
                             //squnc_id
                         var matchScore = 0;
@@ -520,7 +514,6 @@
         window.sortingStartTime = performance.now();
         var sortedSearchedInfo = sortQuestionsAns(resultArr); //resultArr; 
         window.sortingEndTime = performance.now();
-
         window.domBuildStartTime = performance.now();
         var len = sortedSearchedInfo.length;
         var dom = "",
