@@ -117,7 +117,7 @@
             <input type="number" class="min_rel" />
         </div>
         <div>
-            <div class="timeTaken">Time taken to show search result
+            <div class="timeTaken">Time taken (in Milliseconds)
                 <div class="search-time">To search<span class="js-search-time"></span></div>
                 <div class="sort-time">To sort<span class="js-sort-time"></span></div>
                 <div class="dombuild-time">To DOM building<span class="js-dombuild-time"></span></div>
@@ -174,7 +174,8 @@
     // Global var
     var searchWordsArr = [];
     var sData = [];
-    var sDataJson = {};
+    var sDataJson = {},
+        sequence = [];
 
     init();
 
@@ -224,7 +225,7 @@
                     "q_id": id,
                     "a_id": 0,
                     "vlu_fctr": 0.2,
-                    "squnc_id": i,
+                    "sntnc_index": i,
                     "searchArr_id": searchArr.length ? searchArr.length : 0
 
                 });
@@ -243,7 +244,7 @@
                         "q_id": id,
                         "a_id": id + "-" + j,
                         "vlu_fctr": 0.1,
-                        "squnc_id": p,
+                        "sntnc_index": p,
                         "searchArr_id": searchArr.length ? searchArr.length : 0
 
                     });
@@ -261,7 +262,7 @@
             //             "word": value,
             //             "q_id": id,
             //             "vlu_fctr": 0.2,
-            //             "squnc_id": index,
+            //             "sntnc_index": index,
             //             "searchArr_id": searchArr.length
             //         });
             //     });
@@ -300,7 +301,7 @@
         clearTimeout(timeout);
         $(".js-sec-wrpr-res").html('');
         timeout = setTimeout(function() {
-            window.startTime = Date.now();
+            window.startTime = performance.now();
             var term = $this.val().trim().replace(/[^a-zA-Z0-9' ]/g, "");
             newSearch(term);
         }, 200);
@@ -310,10 +311,10 @@
     var newSearch = function(terms) {
 
         // Searching and matching score [Start]
-        var searchStartTime = Date.now();
+        var searchStartTime = performance.now();
         var termArr = terms.split(" ");
         var resultArr = getSearchResult(termArr, builtData);
-        var searchEndTime = Date.now();
+        var searchEndTime = performance.now();
         var searchTime = (searchEndTime - searchStartTime) / 1000;
         // Searching and matching score [End]
 
@@ -322,19 +323,19 @@
         var dom = $.isEmptyObject(resultArr) ? "" : buildDom(resultArr, termArr);
         $(".sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time").html('');
         $(".js-sec-wrpr-res").append(dom);
-        var domBuildEndTime = Date.now();
+        var domBuildEndTime = performance.now();
         var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
         // Dom Building time [End]
 
 
-        var processEndTime = Date.now();
+        var processEndTime = performance.now();
 
         var totalTimeTaken = (processEndTime - startTime) / 1000;
         var sortingTime = (sortingEndTime - sortingStartTime) / 1000
-        $(".js-search-time").append(searchTime);
-        $(".js-dombuild-time").append(domBuildTime);
-        $(".js-sort-time").append(sortingTime);
-        $(".js-total-time").append(totalTimeTaken);
+        $(".js-search-time").append(searchTime.toFixed(4));
+        $(".js-dombuild-time").append(domBuildTime.toFixed(4));
+        $(".js-sort-time").append(sortingTime.toFixed(4));
+        $(".js-total-time").append(totalTimeTaken.toFixed(4));
         return true;
     };
 
@@ -343,6 +344,7 @@
             termArr = termArr,
             resultArr = [],
             tempObj = [];
+
         if (termArr.length > 0) {
             for (var i = 0, iLen = termArr.length; i < iLen; i++) {
                 termArrIndex = binarySearch(builtData, termArr[i], true, "multiple");
@@ -384,13 +386,29 @@
                         }
 
 
+                        if (termArr[i].toLowerCase() === builtData[vlu].word.toLowerCase()) {
+                            if (sequence.length >= 1) {
 
-                        if (indx > 1 && builtData[indx].searchArr_id === builtData[indx - 1].searchArr_id) {
-                            if ((builtData[indx].a_id === builtData[indx - 1].a_id)) {
-                                var matchScore = 1;
-                                matchScore *= weightage.sequence;
+                                if ((sequence.indexOf(builtData[vlu].searchArr_id) > -1)) {
+                                    for (var s = 0, slen = sequence.length; s < slen; s++) {
+                                        if ((builtData[vlu].searchArr_id) === (sequence[s] - 1)) {
+                                            matchScore *= weightage.sequence;
+                                        }
+                                    }
+                                } else {
+                                    sequence.push(builtData[vlu].searchArr_id);
+                                }
+                            } else {
+                                sequence.push(builtData[vlu].searchArr_id);
                             }
+
                         }
+
+                        // builtData[indx].searchArr_id === builtData[indx - 1].searchArr_id
+
+                        // if ((builtData[indx].a_id === builtData[indx - 1].a_id)) {
+                        //     matchScore *= weightage.sequence;
+                        // }
 
                         if (tempObj.length < 1) {
                             tempObj.push({
@@ -421,6 +439,7 @@
         for (var d = 0, dlen = tempObj.length; d < dlen; d++) {
             delete sDataJson[tempObj[d].q_id].word_occurrence;
         }
+        //sequence = [];
         return tempObj;
     }
 
@@ -433,26 +452,36 @@
     }
 
     function buildDom(resultArr, searchItems) {
-        window.sortingStartTime = Date.now();
+        window.sortingStartTime = performance.now();
         var sortedSearchedInfo = sortQuestionsAns(resultArr); //resultArr; 
-        window.sortingEndTime = Date.now();
+        window.sortingEndTime = performance.now();
 
-        window.domBuildStartTime = Date.now();
+        window.domBuildStartTime = performance.now();
         var len = sortedSearchedInfo.length;
-        var dom = "";
+        var dom = "",
+            question,
+            answer;
 
         for (var p = 0; p < len; p++) {
 
-            var tempDom = '<div class="sec" data-id="' + sortedSearchedInfo[p].match_score + '">\
-                 <div class="ques"><b>Q: ' + sortedSearchedInfo[p].q_id + '</b> ' + sDataJson[sortedSearchedInfo[p].q_id].question + '</div>\
-                 <div class="ans"><b>A: </b> ' + sDataJson[sortedSearchedInfo[p].q_id].answer[1] + '</div>\
-                 <div class="ans"><b>R: </b> ' + sortedSearchedInfo[p].match_score + '</div>\
-              </div>';
+            question = sDataJson[sortedSearchedInfo[p].q_id].question,
+                answer = sDataJson[sortedSearchedInfo[p].q_id].answer[1];
+
             for (var i = 0, iLan = searchItems.length; i < iLan; i++) {
-                tempDom = tempDom.replace(new RegExp(" " + searchItems[i], "ig"), function(match) {
-                    return ' <span class="hghlght">' + match.trim() + '</span>';
+                question = question && question.replace(new RegExp(searchItems[i], "i"), function(match) {
+                    return '<span class="hghlght">' + match.trim() + '</span>';
+                });
+                answer = answer && answer.replace(new RegExp(searchItems[i], "i"), function(match) {
+                    return '<span class="hghlght">' + match.trim() + '</span>';
                 });
             }
+
+            var tempDom = '<div class="sec" data-id="' + sortedSearchedInfo[p].match_score + '">\
+                 <div class="ques"><b>Q: ' + sortedSearchedInfo[p].q_id + '</b> ' + question + '</div>\
+                 <div class="ans"><b>A: </b> ' + answer + '</div>\
+                 <div class="ans"><b>R: </b> ' + sortedSearchedInfo[p].match_score + '</div>\
+              </div>';
+
             dom += tempDom;
         }
         return dom;

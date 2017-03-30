@@ -1,12 +1,9 @@
 # mspui Search 
 Issues to resolve
-1. Binary search not working with case insensitive words [Algorithm]
 
-4. Take into consideration the question and answer weightage [Product]
-5. Show only those answers which contains the search keyword. Rightnow it is showing only first one after overall question & answer's keywords match score. 
-
-6. Not giving any specific weightage to sequential search keywords. Needs to be done.
-
+1. Take into consideration the question and answer weightage [Product]
+2. Show only those answers which contains the search keyword. Rightnow it is showing only first one after overall question & answer's keywords match score. 
+3. Not giving any specific weightage to sequential search keywords. Needs to be done.
 
 
 
@@ -27,3 +24,4 @@ Resoved Issues:
 3. Highlighter of the words after sorting [Solved 29Mar/6:30AM]
 4. Partial and full text search is not working as we implemented the binary search to match the complete text string [Solved]
 5. Relevence score still not full proof. Need to cross check [Product] [Solved 30Mar/01:10AM]
+6. Binary search not working with case insensitive words [Algorithm]
