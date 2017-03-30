@@ -214,7 +214,7 @@
 
             var wordArr = (mData[id].question).replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function() {
                 return true;
-            });;
+            });
 
             for (var i = 0, len = wordArr.length; i < len; i++) {
                 if (wordArr[i] == "") {
@@ -223,7 +223,7 @@
                 searchArr.push({
                     "word": wordArr[i],
                     "q_id": id,
-                    "a_id": 0,
+                    "a_id": id + "-" + "0",
                     "vlu_fctr": 0.2,
                     "sntnc_index": i,
                     "searchArr_id": searchArr.length ? searchArr.length : 0
@@ -234,7 +234,7 @@
             for (var j = 0, jlen = mData[id].answer.length; j < jlen; j++) {
                 var answerWords = mData[id].answer[j].replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function() {
                     return true;
-                });;
+                });
                 for (var p = 0, plen = answerWords.length; p < plen; p++) {
                     if (answerWords[p] == "") {
                         break;
@@ -353,6 +353,7 @@
                     $.each(termArrIndex, function(indx, vlu) { // if results are comming in array ie. multiple occurrence of a word;
 
                         var q_id = builtData[vlu].q_id;
+                        var a_id = builtData[vlu].a_id;
                         //Pass only array of object of highest match_score question and answer;
 
                         sDataJson[q_id].word_occurrence = sDataJson[q_id].word_occurrence ? ++sDataJson[q_id].word_occurrence : 1
@@ -413,6 +414,7 @@
                         if (tempObj.length < 1) {
                             tempObj.push({
                                 q_id: q_id,
+                                a_id: a_id,
                                 match_score: matchScore
                             });
                         } else {
@@ -420,12 +422,14 @@
                             for (var p = 0, pLen = tempObj.length; p < pLen; p++) {
                                 if (tempObj[p].q_id === q_id) {
                                     tempObj[p].match_score += parseInt(matchScore);
+                                    tempObj[p].a_id += ((tempObj[p].a_id).indexOf(a_id) > -1) ? "" : "|" + a_id;
                                     flag = true;
                                 }
                             }
                             if (!flag) {
                                 tempObj.push({
                                     q_id: q_id,
+                                    a_id: a_id,
                                     match_score: matchScore
                                 });
                             }
@@ -460,32 +464,37 @@
         var len = sortedSearchedInfo.length;
         var dom = "",
             question,
-            answer;
+            answer = "";
 
         for (var p = 0; p < len; p++) {
+            question = sDataJson[sortedSearchedInfo[p].q_id].question;
+            var ans_group = sortedSearchedInfo[p].a_id ? (sortedSearchedInfo[p].a_id).split("|") : 0;
+            for (var i = 0, ilen = ans_group.length; i < ilen; i++) {
+                var ans_id = ans_group[i] ? ans_group[i].split("-") : 0;
+                answer += '<div class="ans"><b>A: ' + ans_id[1] + '</b> ' + sDataJson[sortedSearchedInfo[p].q_id].answer[ans_id[1]] + '</div>';
 
-            question = sDataJson[sortedSearchedInfo[p].q_id].question,
-                answer = sDataJson[sortedSearchedInfo[p].q_id].answer[1];
+            }
+
 
             for (var i = 0, iLan = searchItems.length; i < iLan; i++) {
                 question = question && question.replace(new RegExp(searchItems[i], "i"), function(match) {
                     return '<span class="hghlght">' + match.trim() + '</span>';
                 });
-                answer = answer && answer.replace(new RegExp(searchItems[i], "i"), function(match) {
-                    return '<span class="hghlght">' + match.trim() + '</span>';
-                });
+                answer = answer && answer.replace(new RegExp(searchItems[i], "i"), function(match) { return '<span class="hghlght">' + match.trim() + '</span>'; });
+
             }
+
 
             var tempDom = '<div class="sec" data-id="' + sortedSearchedInfo[p].match_score + '">\
                  <div class="ques"><b>Q: ' + sortedSearchedInfo[p].q_id + '</b> ' + question + '</div>\
-                 <div class="ans"><b>A: </b> ' + answer + '</div>\
-                 <div class="ans"><b>R: </b> ' + sortedSearchedInfo[p].match_score + '</div>\
+                 ' + answer + '\
               </div>';
 
-            dom += tempDom;
+            dom += tempDom.replace(new RegExp(searchItems[i], "i"), function(match) { return '<span class="hghlght">' + match.trim() + '</span>'; });;
+            answer = "";
         }
-        return dom;
 
+        return dom;
     }
 
     function binarySearch(searchArray, searchElement, caseInsensitive, occurrence) {
