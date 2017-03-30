@@ -272,6 +272,7 @@
         return searchArr;
     }
 
+    
 
 
     function sortedByWord(searchArray) {
@@ -323,6 +324,7 @@
         var dom = $.isEmptyObject(resultArr) ? "" : buildDom(resultArr, termArr);
         $(".sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time").html('');
         $(".js-sec-wrpr-res").append(dom);
+        //highlightText(searchItems);
         var domBuildEndTime = performance.now();
         var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
         // Dom Building time [End]
@@ -455,6 +457,8 @@
         return resultArr;
     }
 
+   
+
     function buildDom(resultArr, searchItems) {
         window.sortingStartTime = performance.now();
         var sortedSearchedInfo = sortQuestionsAns(resultArr); //resultArr; 
@@ -477,10 +481,10 @@
 
 
             for (var i = 0, iLan = searchItems.length; i < iLan; i++) {
-                question = question && question.replace(new RegExp(searchItems[i], "i"), function(match) {
+                question = question && question.replace(new RegExp(searchItems[i], "ig"), function(match) {
                     return '<span class="hghlght">' + match.trim() + '</span>';
                 });
-                answer = answer && answer.replace(new RegExp(searchItems[i], "i"), function(match) { return '<span class="hghlght">' + match.trim() + '</span>'; });
+                answer = answer && answer.replace(new RegExp(searchItems[i], "ig"), function(match) { return '<span class="hghlght">' + match.trim() + '</span>'; });
 
             }
 
@@ -490,8 +494,7 @@
                  ' + answer + '\
               </div>';
 
-            dom += tempDom.replace(new RegExp(searchItems[i], "i"), function(match) { return '<span class="hghlght">' + match.trim() + '</span>'; });;
-            answer = "";
+            dom += tempDom;
         }
 
         return dom;
