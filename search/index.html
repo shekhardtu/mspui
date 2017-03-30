@@ -346,9 +346,23 @@
         timeout = setTimeout(function() {
             window.startTime = performance.now();
             var term = $this.val().trim();
-            newSearch(term)
+
+            var termArr = term.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/[\s\t\r\n]+/g, " ").split(" ").reduce(function(a, v) {
+                if (v.length > 2 || (v === v.toUpperCase() && v.length > 1)) {
+                    a.push(v);
+                }
+                return a;
+            }, []);
+
+            if (termArr) {
+                newSearch(termArr);
+
+            } else {
+                return false;
+            }
 
         }, 200);
+
 
     });
 
@@ -356,12 +370,7 @@
 
         // Searching and matching score [Start]
         var searchStartTime = performance.now();
-        var termArr = terms.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/[\s\t\r\n]+/g, " ").split(" ").reduce(function(a, v) {
-            if (v.length > 2 || (v === v.toUpperCase() && v.length > 1)) {
-                a.push(v);
-            }
-            return a;
-        }, []);
+
         var resultArr = getSearchResult(termArr, builtData);
         var searchEndTime = performance.now();
         var searchTime = (searchEndTime - searchStartTime) / 1000;
