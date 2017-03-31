@@ -246,14 +246,10 @@
         }
 
         // keywords Build functions 
-
         function splittingInWordsArray(mData) {
             var tempObj = {};
             var searchArr = [];
-
-
             for (id in mData) {
-
                 var wordArr = (mData[id].question).replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function () {
                     return true;
                 });
@@ -295,20 +291,6 @@
                 }
                 delete wordArr;
 
-                //     var wordArr = (mData[id].question).split(" ");
-                //     for (var i = 0; i < mData[id].answer.length; i++) {
-                //         wordArr = wordArr.concat((mData[id].answer[i]).split(" "));
-                //     }
-                //     $.each(wordArr, function(index, value) {
-                //         searchArr.push({
-                //             "word": value,
-                //             "q_id": id,
-                //             "vlu_fctr": 0.2,
-                //             "sntnc_index": index,
-                //             "searchArr_id": searchArr.length
-                //         });
-                //     });
-
             };
             builtData = sortedByWord(searchArr);
             return searchArr;
@@ -338,17 +320,45 @@
             timeout = setTimeout(function () {
                 window.startTime = performance.now();
                 var term = $this.val().trim();
+                var stopWords = ["the", "is", "a", "all", "am", "an", "and",
+                    "are",
+                    "as",
+                    "at",
+                    "be",
+                    "by",
+                    "do",
+                    "in",
+                    "into",
+                    "it",
+                    "its",
+                    "my",
+                    "no",
+                    "nor",
+                    "not",
+                    "of",
+                    "on",
+                    "or",
+                    "that",
+                    "then",
+                    "this",
+                    "to",
+                    "was",
+                    "were"
+                ];
                 var searchKeywords = term.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(
-                    /[\s\t\r\n]+/g, " ").split(" ").reduce(function (a, v) {
+                    /[\s\t\r\n]+/g, " ").split(" ").reduce(function (a, v, i) {
                     if (v.length > 0 || (v === v.toUpperCase() && v.length > 1)) {
                         a.push(v);
                     }
                     return a;
                 }, []);
 
-                if (searchKeywords.length > 0) {
-                    processSearch(searchKeywords)
+                var fiteredSearchKeywords = searchKeywords.filter(function (n) {
+                    return stopWords.indexOf(n) == -1;
+                });
 
+                if (fiteredSearchKeywords.length > 0) {
+                    processSearch(fiteredSearchKeywords);
                 } else {
                     return false;
                 }
