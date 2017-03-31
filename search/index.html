@@ -9,108 +9,108 @@
 
 <body>
     <style type="text/css">
-    .sec {
-        background: #fff;
-        padding: 10px;
-        margin: 10px;
-        color: #333;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-        line-height: 1.4;
-    }
-    
-    .ques {
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-    
-    .answer {
-        font-size: 14px;
-        color: #777;
-    }
-    
-    .hghlght {
-        background-color: yellow;
-    }
-    
-    .search-wrpr {
-        text-align: center;
-    }
-    
-    .search {
-        padding: 5px 8px;
-        width: 300px;
-    }
-    
-    .sec-wrpr {
-        display: none;
-    }
-    
-    .search-form {
-        margin-bottom: 10px;
-        overflow: auto;
-        text-align: center;
-        border-bottom: 1px solid #dfe1e8;
-    }
-    
-    .search-form input {
-        width: 50px;
-    }
-    
-    .search-form label {
-        display: inline-block;
-    }
-    
-    .search-form div {
-        padding: 5px 10px;
-        display: inline-block;
-        box-sizing: border-box;
-    }
-    
-    .search-form div:first-child {
-        border: 0;
-    }
-    
-    .timeTaken {
-        border: 1px solid #ddd;
-        font-size: 12px;
-    }
-    
-    .js-search-time,
-    .js-sort-time,
-    .js-total-time,
-    .js-dombuild-time {
-        content: "0";
-        border: 1px solid #ddd;
-        display: inline-block;
-        margin-left: 5px;
-        padding: 0 2px;
-        font-weight: 600;
-    }
-    
-    .col-2,
-    .col-3,
-    .col-4 {
-        display: inline-block;
-    }
-    
-    .col-3 {
-        width: 30%;
-    }
-    
-    .col-2 {
-        width: 49%;
-    }
-    
-    .col-1 {
-        width: 100%;
-        display: block !important;
-    }
-    
-    input {
-        width: auto;
-        padding: 2px 3px;
-    }
+        .sec {
+            background: #fff;
+            padding: 10px;
+            margin: 10px;
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+            line-height: 1.4;
+        }
+
+        .ques {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .answer {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .hghlght {
+            background-color: yellow;
+        }
+
+        .search-wrpr {
+            text-align: center;
+        }
+
+        .search {
+            padding: 5px 8px;
+            width: 300px;
+        }
+
+        .sec-wrpr {
+            display: none;
+        }
+
+        .search-form {
+            margin-bottom: 10px;
+            overflow: auto;
+            text-align: center;
+            border-bottom: 1px solid #dfe1e8;
+        }
+
+        .search-form input {
+            width: 50px;
+        }
+
+        .search-form label {
+            display: inline-block;
+        }
+
+        .search-form div {
+            padding: 5px 10px;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+
+        .search-form div:first-child {
+            border: 0;
+        }
+
+        .timeTaken {
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        .js-search-time,
+        .js-sort-time,
+        .js-total-time,
+        .js-dombuild-time {
+            content: "0";
+            border: 1px solid #ddd;
+            display: inline-block;
+            margin-left: 5px;
+            padding: 0 2px;
+            font-weight: 600;
+        }
+
+        .col-2,
+        .col-3,
+        .col-4 {
+            display: inline-block;
+        }
+
+        .col-3 {
+            width: 30%;
+        }
+
+        .col-2 {
+            width: 49%;
+        }
+
+        .col-1 {
+            width: 100%;
+            display: block !important;
+        }
+
+        input {
+            width: auto;
+            padding: 2px 3px;
+        }
     </style>
     <div class="search-form">
         <div class="col-3">
@@ -175,459 +175,466 @@
     </div>
     <script src="jquery-3.1.1.min.js"></script>
     <script>
-    /* Search scoring functionality [Start] */
-    $(document).on("input", ".search-form input", function() {
-        weightage = {
-            "fullMatch": $(".full").val(),
-            "partialMatch": $(".partial").val(),
-            "uniqueMatch": $(".unique").val(),
-            "repeatMatch": $(".repeat").val(),
-            "sequence": $(".sequence").val(),
-            "caseMatch": $(".case_sensitive").val(),
-            "minRelevance": $(".min_rel").val()
+        /* Search scoring functionality [Start] */
+        $(document).on("input", ".search-form input", function () {
+            weightage = {
+                "fullMatch": $(".full").val(),
+                "partialMatch": $(".partial").val(),
+                "uniqueMatch": $(".unique").val(),
+                "repeatMatch": $(".repeat").val(),
+                "sequence": $(".sequence").val(),
+                "caseMatch": $(".case_sensitive").val(),
+                "minRelevance": $(".min_rel").val()
+            };
+            localStorage.weightage = JSON.stringify(weightage);
+        });
+
+        var updateFormLabels = function (weightage) {
+            $(".full").val(weightage.fullMatch);
+            $(".partial").val(weightage.partialMatch);
+            $(".unique").val(weightage.uniqueMatch);
+            $(".repeat").val(weightage.repeatMatch);
+            $(".sequence").val(weightage.sequence);
+            $(".case_sensitive").val(weightage.caseMatch);
+            $(".min_rel").val(weightage.minRelevance);
         };
-        localStorage.weightage = JSON.stringify(weightage);
-    });
-
-    var updateFormLabels = function(weightage) {
-        $(".full").val(weightage.fullMatch);
-        $(".partial").val(weightage.partialMatch);
-        $(".unique").val(weightage.uniqueMatch);
-        $(".repeat").val(weightage.repeatMatch);
-        $(".sequence").val(weightage.sequence);
-        $(".case_sensitive").val(weightage.caseMatch);
-        $(".min_rel").val(weightage.minRelevance);
-    };
 
 
-    var defaultWeightage = {
-            fullMatch: 2,
-            partialMatch: 1,
-            uniqueMatch: 3,
-            repeatMatch: 2,
-            sequence: 1.5,
-            caseMatch: 2,
-            minRelevance: .6
-        },
-        weightage = localStorage.weightage ? JSON.parse(localStorage.weightage) : defaultWeightage;
-    updateFormLabels(weightage);
+        var defaultWeightage = {
+                fullMatch: 2,
+                partialMatch: 1,
+                uniqueMatch: 3,
+                repeatMatch: 2,
+                sequence: 1.5,
+                caseMatch: 2,
+                minRelevance: .6
+            },
+            weightage = localStorage.weightage ? JSON.parse(localStorage.weightage) : defaultWeightage;
+        updateFormLabels(weightage);
 
-    /* Search scoring functionality [End] */
-    // Global var
-    var searchWordsArr = [];
-    var sData = [];
-    var sDataJson = {},
-        sequence = [];
+        /* Search scoring functionality [End] */
+        // Global var
+        var searchWordsArr = [];
+        var sData = [];
+        var sDataJson = {},
+            sequence = [];
 
-    init();
-
-
-    function processJson(fileName) {
-        var dfd = $.Deferred();
-
-        $.ajax({
-            url: fileName,
-            dataType: 'json',
-            async: false
-        }).done(function(response) {
-            mData = response;
-            return dfd.resolve(response);
-        });
-        return dfd.promise();
-    };
+        init();
 
 
+        function processJson(fileName) {
+            var dfd = $.Deferred();
 
-    function init() {
-        processJson("sdata.json").done(function(response) {
-            var jsonData = sDataJson = response;
-            searchWordsArr = splittingInWordsArray(jsonData);
-        });
-    }
-
-    // keywords Build functions 
-
-    function splittingInWordsArray(mData) {
-        var tempObj = {};
-        var searchArr = [];
-
-
-        for (id in mData) {
-
-            var wordArr = (mData[id].question).replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function() {
-                return true;
+            $.ajax({
+                url: fileName,
+                dataType: 'json',
+                async: false
+            }).done(function (response) {
+                mData = response;
+                return dfd.resolve(response);
             });
+            return dfd.promise();
+        };
 
-            for (var i = 0, len = wordArr.length; i < len; i++) {
-                if (wordArr[i] == "") {
-                    break;
-                }
-                searchArr.push({
-                    "word": wordArr[i],
-                    "q_id": id,
-                    "a_id": id + "-" + "0",
-                    "vlu_fctr": 0.2,
-                    "sntnc_index": i,
-                    "searchArr_id": searchArr.length ? searchArr.length : 0
 
-                });
-            }
 
-            for (var j = 0, jlen = mData[id].answer.length; j < jlen; j++) {
-                var answerWords = mData[id].answer[j].replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function() {
+        function init() {
+            processJson("sdata.json").done(function (response) {
+                var jsonData = sDataJson = response;
+                searchWordsArr = splittingInWordsArray(jsonData);
+            });
+        }
+
+        // keywords Build functions 
+
+        function splittingInWordsArray(mData) {
+            var tempObj = {};
+            var searchArr = [];
+
+
+            for (id in mData) {
+
+                var wordArr = (mData[id].question).replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function () {
                     return true;
                 });
-                for (var p = 0, plen = answerWords.length; p < plen; p++) {
-                    if (answerWords[p] == "") {
+
+                for (var i = 0, len = wordArr.length; i < len; i++) {
+                    if (wordArr[i] == "") {
                         break;
                     }
                     searchArr.push({
-                        "word": answerWords[p],
+                        "word": wordArr[i],
                         "q_id": id,
-                        "a_id": id + "-" + j,
-                        "vlu_fctr": 0.1,
-                        "sntnc_index": p,
+                        "a_id": id + "-" + "0",
+                        "vlu_fctr": 0.2,
+                        "sntnc_index": i,
                         "searchArr_id": searchArr.length ? searchArr.length : 0
 
                     });
                 }
-                delete answerWords;
-            }
-            delete wordArr;
 
-            //     var wordArr = (mData[id].question).split(" ");
-            //     for (var i = 0; i < mData[id].answer.length; i++) {
-            //         wordArr = wordArr.concat((mData[id].answer[i]).split(" "));
-            //     }
-            //     $.each(wordArr, function(index, value) {
-            //         searchArr.push({
-            //             "word": value,
-            //             "q_id": id,
-            //             "vlu_fctr": 0.2,
-            //             "sntnc_index": index,
-            //             "searchArr_id": searchArr.length
-            //         });
-            //     });
+                for (var j = 0, jlen = mData[id].answer.length; j < jlen; j++) {
+                    var answerWords = mData[id].answer[j].replace(/[^a-zA-Z0-9' ]/g, "").split(" ").filter(function () {
+                        return true;
+                    });
+                    for (var p = 0, plen = answerWords.length; p < plen; p++) {
+                        if (answerWords[p] == "") {
+                            break;
+                        }
+                        searchArr.push({
+                            "word": answerWords[p],
+                            "q_id": id,
+                            "a_id": id + "-" + j,
+                            "vlu_fctr": 0.1,
+                            "sntnc_index": p,
+                            "searchArr_id": searchArr.length ? searchArr.length : 0
 
-        };
-        builtData = sortedByWord(searchArr);
-        return searchArr;
-    }
-
-    function sortedByWord(searchArray) {
-        searchArray.sort(function(a, b) {
-            var alc = a.word.toLowerCase().toString(),
-                blc = b.word.toLowerCase().toString();
-            return alc > blc ? 1 : alc < blc ? -1 : 0;
-        });
-        return searchArray;
-    }
-
-     var sortQuestionsAns = function(resultArr) {
-        resultArr.sort(function(a, b) {
-            return b.match_score - a.match_score
-        });
-        return resultArr;
-    }
-
-    var timeout;
-    $(document).on("input", ".search", function() {
-        $this = $(this);
-        clearTimeout(timeout);
-        $(".js-sec-wrpr-res").html('');
-        timeout = setTimeout(function() {
-            window.startTime = performance.now();
-            var term = $this.val().trim();
-            var searchKeywords = term.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/[\s\t\r\n]+/g, " ").split(" ").reduce(function(a, v) {
-                if (v.length > 0 || (v === v.toUpperCase() && v.length > 1)) {
-                    a.push(v);
+                        });
+                    }
+                    delete answerWords;
                 }
-                return a;
-            }, []);
+                delete wordArr;
 
-            if (searchKeywords.length > 0) {
-                 processSearch(searchKeywords)
+                //     var wordArr = (mData[id].question).split(" ");
+                //     for (var i = 0; i < mData[id].answer.length; i++) {
+                //         wordArr = wordArr.concat((mData[id].answer[i]).split(" "));
+                //     }
+                //     $.each(wordArr, function(index, value) {
+                //         searchArr.push({
+                //             "word": value,
+                //             "q_id": id,
+                //             "vlu_fctr": 0.2,
+                //             "sntnc_index": index,
+                //             "searchArr_id": searchArr.length
+                //         });
+                //     });
 
-            } else {
-                return false;
-            }
-
-        }, 200);
-
-
-    });
-
-    var processSearch = function(searchKeywords) {
-
-        // Searching and matching score [Start]
-        var searchStartTime = performance.now();
-        var searchResultArr = getSearchResult(searchKeywords, builtData);
-        var searchEndTime = performance.now();
-        var searchTime = (searchEndTime - searchStartTime) / 1000;
-        // Searching and matching score [End]
-
-
-        window.sortingStartTime = performance.now();
-        var sortedSearchResult = searchResultArr.length && (searchResultArr); //resultArr; 
-        window.sortingEndTime = performance.now();
-
-        // Dom Building time [Start]
-        window.domBuildStartTime = performance.now();
-        var dom = sortedSearchResult.length && buildDom(sortedSearchResult);
-        $(".sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time").html('');
-        $(".js-sec-wrpr-res").append(dom);
-       
-       
-        // text highlighting time [Start]
-        highlightText(searchKeywords);
-        // text highlighting  time [End]
-
-        var domBuildEndTime = performance.now();
-        var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
-        // Dom Building time [End]
-
-        var processEndTime = performance.now();
-        var totalTimeTaken = (processEndTime - startTime) / 1000;
-        var sortingTime = (sortingEndTime - sortingStartTime) / 1000
-
-        $(".js-search-time").append(searchTime.toFixed(4));
-        $(".js-dombuild-time").append(domBuildTime.toFixed(4));
-        $(".js-sort-time").append(sortingTime.toFixed(4));
-        $(".js-total-time").append(totalTimeTaken.toFixed(4));
-
-        return true;
-    };
-
-     var highlightText = function(searchItems) {
-        for (var i = 0; i < searchItems.length; i++) {
-            $(".sec-wrpr-res .sec").children().each(function() {
-                var text = " " + $(this).html();
-                text = text.replace(new RegExp(" " + searchItems[i], "ig"), function(match) {
-
-                    return ' <span class="hghlght">' + match.trim() + '</span>';
-                });
-                $(this).html(text.trim());
-            });
+            };
+            builtData = sortedByWord(searchArr);
+            return searchArr;
         }
-    }
 
-    function getSearchResult(searchKeywordsArr, builtData) {
-        var builtData = builtData,
-            termArr = searchKeywordsArr,
-            resultArr = [],
-            tempObj = [];
-        if (termArr.length > 0) {
-            for (var i = 0, iLen = termArr.length; i < iLen; i++) {
-                termArrIndex = binarySearch(builtData, termArr[i], true, "multiple");
-                if (termArrIndex !== -1 && termArrIndex.length >= 1) {
-                    $.each(termArrIndex, function(indx, vlu) { // if results are comming in array ie. multiple occurrence of a word;
-                        var q_id = builtData[vlu].q_id; // Every pair of answer and question contains a unique id.
-                        var a_id = builtData[vlu].a_id; // If it is answer keyword it contains word index in that sentence
-                        //Pass only array of object of highest match_score question and answer;
-                        sDataJson[q_id].word_occurrence = sDataJson[q_id].word_occurrence ? ++sDataJson[q_id].word_occurrence : 1
+        function sortedByWord(searchArray) {
+            searchArray.sort(function (a, b) {
+                var alc = a.word.toLowerCase().toString(),
+                    blc = b.word.toLowerCase().toString();
+                return alc > blc ? 1 : alc < blc ? -1 : 0;
+            });
+            return searchArray;
+        }
+
+        var sortQuestionsAns = function (resultArr) {
+            resultArr.sort(function (a, b) {
+                return b.match_score - a.match_score
+            });
+            return resultArr;
+        }
+
+        var timeout;
+        $(document).on("input", ".search", function () {
+            $this = $(this);
+            clearTimeout(timeout);
+            $(".js-sec-wrpr-res").html('');
+            timeout = setTimeout(function () {
+                window.startTime = performance.now();
+                var term = $this.val().trim();
+                var searchKeywords = term.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(
+                    /[\s\t\r\n]+/g, " ").split(" ").reduce(function (a, v) {
+                    if (v.length > 0 || (v === v.toUpperCase() && v.length > 1)) {
+                        a.push(v);
+                    }
+                    return a;
+                }, []);
+
+                if (searchKeywords.length > 0) {
+                    processSearch(searchKeywords)
+
+                } else {
+                    return false;
+                }
+
+            }, 200);
+
+
+        });
+
+        var processSearch = function (searchKeywords) {
+
+            // Searching and matching score [Start]
+            var searchStartTime = performance.now();
+            var searchResultArr = getSearchResult(searchKeywords, builtData);
+            var searchEndTime = performance.now();
+            var searchTime = (searchEndTime - searchStartTime) / 1000;
+            // Searching and matching score [End]
+
+
+            window.sortingStartTime = performance.now();
+            var sortedSearchResult = searchResultArr.length && sortQuestionsAns(searchResultArr); //resultArr; 
+            window.sortingEndTime = performance.now();
+
+            // Dom Building time [Start]
+            window.domBuildStartTime = performance.now();
+            var dom = sortedSearchResult.length && buildDom(sortedSearchResult);
+            $(".sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time").html('');
+            $(".js-sec-wrpr-res").append(dom);
+            var domBuildEndTime = performance.now();
+            var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
+            // Dom Building time [End]
+
+            // text highlighting time [Start]
+            highlightText(searchKeywords);
+            // text highlighting  time [End]
+
+            var processEndTime = performance.now();
+            var totalTimeTaken = (processEndTime - startTime) / 1000;
+            var sortingTime = (sortingEndTime - sortingStartTime) / 1000
+
+            $(".js-search-time").append(searchTime.toFixed(4));
+            $(".js-dombuild-time").append(domBuildTime.toFixed(4));
+            $(".js-sort-time").append(sortingTime.toFixed(4));
+            $(".js-total-time").append(totalTimeTaken.toFixed(4));
+
+            return true;
+        };
+
+        var highlightText = function (searchItems) {
+            for (var i = 0; i < searchItems.length; i++) {
+                $(".sec-wrpr-res .sec").children().each(function () {
+                    var text = " " + $(this).html();
+                    text = text.replace(new RegExp(" " + searchItems[i], "ig"), function (match) {
+
+                        return ' <span class="hghlght">' + match.trim() + '</span>';
+                    });
+                    $(this).html(text.trim());
+                });
+            }
+        }
+
+        function getSearchResult(searchKeywordsArr, builtData) {
+            var builtData = builtData,
+                termArr = searchKeywordsArr,
+                resultArr = [],
+                tempObj = [];
+            if (termArr.length > 0) {
+                for (var i = 0, iLen = termArr.length; i < iLen; i++) {
+                    termArrIndex = binarySearch(builtData, termArr[i], true, "multiple");
+                    if (termArrIndex !== -1 && termArrIndex.length >= 1) {
+                        $.each(termArrIndex, function (indx, vlu) { // if results are comming in array ie. multiple occurrence of a word;
+                            var q_id = builtData[vlu].q_id; // Every pair of answer and question contains a unique id.
+                            var a_id = builtData[vlu].a_id; // If it is answer keyword it contains word index in that sentence
+                            //Pass only array of object of highest match_score question and answer;
+                            sDataJson[q_id].word_occurrence = sDataJson[q_id].word_occurrence ? ++sDataJson[
+                                q_id].word_occurrence : 1
                             //squnc_id
-                        var matchScore = 0;
+                            var matchScore = 0;
 
-                        if (sDataJson[q_id].word_occurrence > 1) {
-                            //Repeat Word [Tested]
-                            matchScore += parseInt(weightage.repeatMatch);
-                        } else if (sDataJson[q_id].word_occurrence === 1) {
-                            //Unique Word [Tested]
-                            matchScore += parseInt(weightage.uniqueMatch);
-                        }
+                            if (sDataJson[q_id].word_occurrence > 1) {
+                                //Repeat Word [Tested]
+                                matchScore += parseInt(weightage.repeatMatch);
+                            } else if (sDataJson[q_id].word_occurrence === 1) {
+                                //Unique Word [Tested]
+                                matchScore += parseInt(weightage.uniqueMatch);
+                            }
 
-                        if (termArr[i].toLowerCase() === builtData[vlu].word.toLowerCase()) {
-                            //Full Search [Tested]
-                            matchScore *= weightage.fullMatch;
-                        } else {
-                            //Partial Search [Tested]
-                            matchScore *= weightage.partialMatch;
-                        }
+                            if (termArr[i].toLowerCase() === builtData[vlu].word.toLowerCase()) {
+                                //Full Search [Tested]
+                                matchScore *= weightage.fullMatch;
+                            } else {
+                                //Partial Search [Tested]
+                                matchScore *= weightage.partialMatch;
+                            }
 
-                        if (termArr[i] === builtData[vlu].word) {
-                            //Case Sensitive [Tested]
-                            matchScore *= weightage.caseMatch;
-                        } else {
-                            //Case Insensitive
-                            //Do Nothing as of now
-                        }
+                            if (termArr[i] === builtData[vlu].word) {
+                                //Case Sensitive [Tested]
+                                matchScore *= weightage.caseMatch;
+                            } else {
+                                //Case Insensitive
+                                //Do Nothing as of now
+                            }
 
-                        // sequence search matchscore
-                        /* Checking if the result keyword completely matching with search keyword
-                         if yes, on first iteration saving the keyword's original index position(searchArr_id) in json's keyword array.
-                         onwords iterations, Checking if the searchArr_id exist in sequence array if not push again in sequence array
-                         if exists, checking if current word's previous searchArr_id exist in sequence array using "for loop".
-                         if current word's previous word (searchArr_id-1) contains in sequence array, we are alloting match score. */    
-                        if (termArr[i].toLowerCase() === builtData[vlu].word.toLowerCase()) {
-                            if (sequence.length >= 1) {
-                                if ((sequence.indexOf(builtData[vlu].searchArr_id) > -1)) { // On every input 
-                                    for (var s = 0, slen = sequence.length; s < slen; s++) {
-                                        if ((builtData[vlu].searchArr_id) === (sequence[s] - 1)) {
-                                            matchScore *= weightage.sequence;
+                            // sequence search matchscore
+                            /* Checking if the result keyword completely matching with search keyword
+                             if yes, on first iteration saving the keyword's original index position(searchArr_id) in json's keyword array.
+                             onwords iterations, Checking if the searchArr_id exist in sequence array if not push again in sequence array
+                             if exists, checking if current word's previous searchArr_id exist in sequence array using "for loop".
+                             if current word's previous word (searchArr_id-1) contains in sequence array, we are alloting match score. */
+                            if (termArr[i].toLowerCase() === builtData[vlu].word.toLowerCase()) {
+                                if (sequence.length >= 1) {
+                                    if ((sequence.indexOf(builtData[vlu].searchArr_id) > -1)) { // On every input 
+                                        for (var s = 0, slen = sequence.length; s < slen; s++) {
+                                            if ((builtData[vlu].searchArr_id) === (sequence[s] - 1)) {
+                                                matchScore *= weightage.sequence;
+                                            }
                                         }
+                                    } else {
+                                        sequence.push(builtData[vlu].searchArr_id);
                                     }
                                 } else {
                                     sequence.push(builtData[vlu].searchArr_id);
                                 }
-                            } else {
-                                sequence.push(builtData[vlu].searchArr_id);
                             }
-                        }
 
-                        if (tempObj.length < 1) {
-                            tempObj.push({
-                                q_id: q_id,
-                                a_id: a_id,
-                                match_score: matchScore
-                            });
-                        } else {
-                            var flag = false;
-                            for (var p = 0, pLen = tempObj.length; p < pLen; p++) {
-                                if (tempObj[p].q_id === q_id) {
-                                    tempObj[p].match_score += parseInt(matchScore);
-                                    tempObj[p].a_id += ((tempObj[p].a_id).indexOf(a_id) > -1) ? "" : "|" + a_id;
-                                    flag = true;
-                                }
-                            }
-                            if (!flag) {
+                            if (tempObj.length < 1) {
                                 tempObj.push({
                                     q_id: q_id,
                                     a_id: a_id,
                                     match_score: matchScore
                                 });
+                            } else {
+                                var flag = false;
+                                for (var p = 0, pLen = tempObj.length; p < pLen; p++) {
+                                    if (tempObj[p].q_id === q_id) {
+                                        tempObj[p].match_score += parseInt(matchScore);
+                                        tempObj[p].a_id += ((tempObj[p].a_id).indexOf(a_id) > -1) ? "" : "|" +
+                                            a_id;
+                                        flag = true;
+                                    }
+                                }
+                                if (!flag) {
+                                    tempObj.push({
+                                        q_id: q_id,
+                                        a_id: a_id,
+                                        match_score: matchScore
+                                    });
+                                }
+
                             }
+                        });
 
-                        }
-                    });
-
+                    }
                 }
             }
-        }
-        for (var d = 0, dlen = tempObj.length; d < dlen; d++) {
-            delete sDataJson[tempObj[d].q_id].word_occurrence;
-        }
-        //sequence = [];
-        return tempObj;
-    }
-
-   
-
-    function buildDom(resultArr) {
-        var sortedSearchedInfo = resultArr; 
-        var len = sortedSearchedInfo.length;
-        var dom = "",
-            question,
-            answer = "";
-
-        for (var p = 0; p < len; p++) {
-            question = sDataJson[sortedSearchedInfo[p].q_id].question;
-            var ans_group = sortedSearchedInfo[p].a_id ? (sortedSearchedInfo[p].a_id).split("|") : 0;
-
-
-            for (var i = 0, ilen = ans_group.length; i < ilen; i++) {
-                var ans_id = ans_group[i] ? ans_group[i].split("-") : "";
-
-                answer += '<div class="ans"><b>A: ' + ans_id[1] + '</b> ' + sDataJson[sortedSearchedInfo[p].q_id].answer[ans_id[1]] + '</div>';
+            for (var d = 0, dlen = tempObj.length; d < dlen; d++) {
+                delete sDataJson[tempObj[d].q_id].word_occurrence;
             }
+            //sequence = [];
+            return tempObj;
+        }
 
-            var tempDom = '<div class="sec" data-id="' + sortedSearchedInfo[p].match_score + '">\
-                 <div class="ques"><b>Q: ' + sortedSearchedInfo[p].q_id + '</b> ' + question + '    ::::: match score ' + sortedSearchedInfo[p].match_score + '</div>\
-                 ' + answer + '\
+
+
+        function buildDom(resultArr) {
+            var sortedSearchedInfo = resultArr;
+            var len = sortedSearchedInfo.length;
+            var dom = "",
+                question,
+                answer = "";
+
+            for (var p = 0; p < len; p++) {
+                question = sDataJson[sortedSearchedInfo[p].q_id].question;
+                var ans_group = sortedSearchedInfo[p].a_id ? (sortedSearchedInfo[p].a_id).split("|") : 0;
+
+
+                for (var i = 0, ilen = ans_group.length; i < ilen; i++) {
+                    var ans_id = ans_group[i] ? ans_group[i].split("-") : "";
+
+                    answer += '<div class="ans"><b>A: ' + ans_id[1] + '</b> ' + sDataJson[sortedSearchedInfo[p].q_id].answer[
+                        ans_id[1]] + '</div>';
+                }
+
+                var tempDom = '<div class="sec" data-id="' + sortedSearchedInfo[p].match_score +
+                    '">\
+                 <div class="ques"><b>Q: ' + sortedSearchedInfo[p].q_id + '</b> ' + question +
+                    '    ::::: match score ' + sortedSearchedInfo[p].match_score + '</div>\
+                 ' + answer +
+                    '\
               </div>';
 
-            dom += tempDom;
-            answer = "";
-            question = "";
-            tempDom = "";
-        }
+                dom += tempDom;
+                answer = question = tempDom = "";
 
-        return dom;
-    }
-
-    function binarySearch(searchArray, searchElement, caseInsensitive, occurrence) {
-        if (typeof searchArray === 'undefined' || searchArray.length <= 0 || typeof searchElement === 'undefined' || searchElement === '') {
-            return -1;
-        }
-        var array = searchArray;
-        var key = searchElement;
-        var keyArr = [];
-        var len = array.length;
-        var ub = (len - 1);
-        var p = 0;
-        var mid = 0;
-        var lb = p;
-
-        key = caseInsensitive && key && typeof key == "string" ? key.toLowerCase() : key;
-
-        function isCaseInsensitive(caseInsensitive, element) {
-            return caseInsensitive && element.word && typeof element.word == "string" ? (element.word).toLowerCase() : element.word;
-        }
-        while (lb <= ub) {
-            mid = parseInt(lb + (ub - lb) / 2, 10);
-
-            if (isCaseInsensitive(caseInsensitive, array[mid]).indexOf(key) > -1) {
-                keyArr.push(mid);
-                if (keyArr.length > len) {
-                    return keyArr;
-                } else if (array[mid + 1] && isCaseInsensitive(caseInsensitive, array[mid + 1]).indexOf(key) > -1) {
-                    for (var i = 1; i < len; i++) {
-                        if (array[mid + 1] && isCaseInsensitive(caseInsensitive, array[mid + i]).indexOf(key) == -1) {
-                            break;
-                        } else {
-                            keyArr.push(mid + i);
-
-                        }
-                    }
-                }
-                if (keyArr.length > len) {
-                    return keyArr;
-                } else if (array[mid - 1] && isCaseInsensitive(caseInsensitive, array[mid - 1]).indexOf(key) > -1) {
-                    for (var i = 1; i < len; i++) {
-
-                        if (isCaseInsensitive(caseInsensitive, array[mid - i]).indexOf(key) == -1) {
-                            break;
-                        } else {
-                            keyArr.push(mid - i);
-                        }
-                    }
-                }
-                return keyArr;
-
-            } else if (key > isCaseInsensitive(caseInsensitive, array[mid])) {
-                lb = mid + 1;
-            } else {
-                ub = mid - 1;
             }
+
+            return dom;
         }
 
-        return -1;
+        function binarySearch(searchArray, searchElement, caseInsensitive, occurrence) {
+            if (typeof searchArray === 'undefined' || searchArray.length <= 0 || typeof searchElement === 'undefined' ||
+                searchElement === '') {
+                return -1;
+            }
+            var array = searchArray;
+            var key = searchElement;
+            var keyArr = [];
+            var len = array.length;
+            var ub = (len - 1);
+            var p = 0;
+            var mid = 0;
+            var lb = p;
 
-    };
+            key = caseInsensitive && key && typeof key == "string" ? key.toLowerCase() : key;
 
-    function linearSearch(searchArray, searchElement, caseInsensitive, occurrence) {
-        if (typeof searchArray === 'undefined' || searchArray.length <= 0 || typeof searchElement === 'undefined' || searchElement === '') {
-            return -1;
-        }
-        searchElement = caseInsensitive ? searchElement.toLowerCase() : searchElement;
-        var stop = searchArray.length;
-        var last, p = 0;
-        var r = [];
-        for (i = 0; i < stop; i++) {
-            if (searchElement === searchArray[i].word) {
+            function isCaseInsensitive(caseInsensitive, element) {
+                return caseInsensitive && element.word && typeof element.word == "string" ? (element.word).toLowerCase() :
+                    element.word;
+            }
+            while (lb <= ub) {
+                mid = parseInt(lb + (ub - lb) / 2, 10);
 
-                if (occurrence === "multiple" || "all") {
-                    r.push(i);
+                if (isCaseInsensitive(caseInsensitive, array[mid]).indexOf(key) > -1) {
+                    keyArr.push(mid);
+                    if (keyArr.length > len) {
+                        return keyArr;
+                    } else if (array[mid + 1] && isCaseInsensitive(caseInsensitive, array[mid + 1]).indexOf(key) > -1) {
+                        for (var i = 1; i < len; i++) {
+                            if (array[mid + 1] && isCaseInsensitive(caseInsensitive, array[mid + i]).indexOf(key) == -1) {
+                                break;
+                            } else {
+                                keyArr.push(mid + i);
+
+                            }
+                        }
+                    }
+                    if (keyArr.length > len) {
+                        return keyArr;
+                    } else if (array[mid - 1] && isCaseInsensitive(caseInsensitive, array[mid - 1]).indexOf(key) > -1) {
+                        for (var i = 1; i < len; i++) {
+
+                            if (isCaseInsensitive(caseInsensitive, array[mid - i]).indexOf(key) == -1) {
+                                break;
+                            } else {
+                                keyArr.push(mid - i);
+                            }
+                        }
+                    }
+                    return keyArr;
+
+                } else if (key > isCaseInsensitive(caseInsensitive, array[mid])) {
+                    lb = mid + 1;
                 } else {
-                    r.push(i);
+                    ub = mid - 1;
                 }
             }
-        }
 
-        if (r.length < 1) {
-            r.push(-1); //nothing found
+            return -1;
+
+        };
+
+        function linearSearch(searchArray, searchElement, caseInsensitive, occurrence) {
+            if (typeof searchArray === 'undefined' || searchArray.length <= 0 || typeof searchElement === 'undefined' ||
+                searchElement === '') {
+                return -1;
+            }
+            searchElement = caseInsensitive ? searchElement.toLowerCase() : searchElement;
+            var stop = searchArray.length;
+            var last, p = 0;
+            var r = [];
+            for (i = 0; i < stop; i++) {
+                if (searchElement === searchArray[i].word) {
+
+                    if (occurrence === "multiple" || "all") {
+                        r.push(i);
+                    } else {
+                        r.push(i);
+                    }
+                }
+            }
+
+            if (r.length < 1) {
+                r.push(-1); //nothing found
+            }
+            return r;
         }
-        return r;
-    }
     </script>
 </body>
 
