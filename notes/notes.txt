@@ -1,0 +1,13 @@
+tags name : single quote 
+follow particular patterns while naming and declaring variable
+js, json: camelcase , 
+php: underscore
+
+why using filter function
+naming should be
+
+function name shouldn't be past tense 
+
+
+Name 
+Extra
