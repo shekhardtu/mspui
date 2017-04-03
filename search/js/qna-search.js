@@ -67,15 +67,16 @@
      });
  }
 
- function keywordArrayToJson(searchArr, wordArr, valueFactor) {
-     for (var i = 0, len = wordArr.length; i < len; i++) {
+ function keywordArrayToJson(questionId, searchArr, wordArr, valueFactor, arrayType, answerWordIndex) {
+
+     for (var i = 0; i < wordArr.length; i++) {
          if (wordArr[i] == '') {
              break;
          }
          searchArr.push({
              'word': wordArr[i],
-             'questionId': id,
-             'answerWordIndex': id + '-' + '0',
+             'questionId': questionId,
+             'answerWordIndex': answerWordIndex,
              'valueFactor': valueFactor,
              'sentenceIndex': i,
              'searchArrayIndex': searchArr.length
@@ -86,37 +87,24 @@
  }
  // keywords Build functions 
  function splittingInWordsArray(mData) {
-     var tempObj = {};
-     var searchArr = [];
+     var tempObj = {},
+         searchArr = [],
+         answerWordIndex;
      for (id in mData) {
          var wordArr = (mData[id].question).replace(/[^a-zA-Z0-9' ]/g, '').split(' ').filter(function () {
              return true;
          });
-
-         searchArr = keywordArrayToJson(searchArr, wordArr, 0.2);
-
-         for (var j = 0, jlen = mData[id].answer.length; j < jlen; j++) {
+         answerWordIndex = id + '-' + '0';
+         searchArr = keywordArrayToJson(id, searchArr, wordArr, 0.2, "question", answerWordIndex);
+         for (var j = 0; j < mData[id].answer.length; j++) {
              var answerWords = mData[id].answer[j].replace(/[^a-zA-Z0-9' ]/g, '').split(' ').filter(function () {
                  return true;
              });
-             for (var p = 0, plen = answerWords.length; p < plen; p++) {
-                 if (answerWords[p] == '') {
-                     break;
-                 }
-                 searchArr.push({
-                     'word': answerWords[p],
-                     'questionId': id,
-                     'answerWordIndex': id + '-' + j,
-                     'valueFactor': 0.1,
-                     'sentenceIndex': p,
-                     'searchArrayIndex': searchArr.length ? searchArr.length : 0
-
-                 });
-             }
+             answerWordIndex = id + '-' + j;
+             searchArr = keywordArrayToJson(id, searchArr, answerWords, 0.2, 'answer', answerWordIndex);
              wipeAnArray(answerWords);
          }
          wipeAnArray(wordArr);
-
      };
      builtData = sortedByWord(searchArr);
      return searchArr;
@@ -144,9 +132,9 @@
 
  var timeout;
  $(document).on('input', '.search', function () {
+    $("js-sec-wrpr-res sec").html('');
      $this = $(this);
      clearTimeout(timeout);
-     $('.js-sec-wrpr-res').html('');
      timeout = setTimeout(function () {
          window.startTime = performance.now();
          var term = $this.val().trim();
@@ -192,7 +180,6 @@
      if (searchKeywords.length < 1) {
          return false;
      }
-
      // Searching and matching score [Start]
      var searchStartTime = performance.now();
      var searchResultArr = getSearchResult(searchKeywords, builtData);
@@ -209,10 +196,12 @@
      window.domBuildStartTime = performance.now();
      var dom = sortedSearchResult.length && buildDom(sortedSearchResult);
      $('.sec-wrpr-res, .js-search-time, .js-sort-time, .js-total-time, .js-dombuild-time').html('');
+
      $('.js-sec-wrpr-res').append(dom);
      var domBuildEndTime = performance.now();
      var domBuildTime = (domBuildEndTime - domBuildStartTime) / 1000;
      // Dom Building time [End]
+
 
      // text highlighting time [Start]
      highlightText(searchKeywords);
@@ -227,18 +216,13 @@
      $('.js-sort-time').append(sortingTime.toFixed(4));
      $('.js-total-time').append(totalTimeTaken.toFixed(4));
 
+
      return true;
  };
 
  var highlightText = function (searchItems) {
      for (var i = 0; i < searchItems.length; i++) {
-         $('.sec-wrpr-res .sec').children().each(function () {
-             var text = $(this).html();
-             text = text.replace(new RegExp(searchItems[i], 'ig'), function (match) {
-                 return ' <span class="hghlght">' + match.trim() + '</span>';
-             });
-             $(this).html(text.trim());
-         });
+         $(".sec-wrpr-res .sec").highlight(searchItems[i]);
      }
  }
 
@@ -362,13 +346,12 @@
          question = sDataJson[sortedSearchedInfo[p].questionId].question;
          var ans_group = sortedSearchedInfo[p].answerWordIndex ? (sortedSearchedInfo[p].answerWordIndex).split('|') : 0;
 
-         for (var i = 0, ilen = ans_group.length; i < ilen; i++) {
+         for (var i = 0; i < ans_group.length; i++) {
              var ans_id = ans_group[i] ? ans_group[i].split('-') : '';
 
              answer += '<div class="ans"><b>A: ' + ans_id[1] + '</b> ' + sDataJson[sortedSearchedInfo[p].questionId].answer[
                  ans_id[1]] + '</div>';
          }
-
          var tempDom = '<div class="sec" data-id="+ sortedSearchedInfo[p].match_score +">\
                  <div class="ques"><b>Q: ' + sortedSearchedInfo[p].questionId + '</b> ' + question +
              '    ::::: match score ' + sortedSearchedInfo[p].match_score + '</div>\
@@ -376,9 +359,7 @@
                 </div>';
          dom += tempDom;
          answer = question = tempDom = '';
-
      }
-
      return dom;
  }
 
@@ -387,14 +368,15 @@
          searchElement === '') {
          return -1;
      }
-     var array = searchArray;
-     var key = searchElement;
-     var keyArr = [];
-     var len = array.length;
-     var ub = (len - 1);
-     var p = 0;
-     var mid = 0;
-     var lb = p;
+     var array = searchArray,
+         key = searchElement,
+         keyArr = [],
+         len = array.length,
+         ub = (len - 1),
+         p = 0,
+         mid = 0,
+         lb = p;
+
 
      key = caseInsensitive && key && typeof key == 'string' ? key.toLowerCase() : key;
 
@@ -440,4 +422,34 @@
      }
      return -1;
 
+ };
+
+ // Highlight code, needs to be refactor 
+
+ jQuery.fn.highlight = function (pat) {
+     function innerHighlight(node, pat) {
+         var skip = 0;
+         if (node.nodeType == 3) {
+             var pos = node.data.toUpperCase().indexOf(pat);
+             pos -= (node.data.substr(0, pos).toUpperCase().length - node.data.substr(0, pos).length);
+             if (pos >= 0) {
+                 var spannode = document.createElement('span');
+                 spannode.className = 'highlight';
+                 var middlebit = node.splitText(pos);
+                 var endbit = middlebit.splitText(pat.length);
+                 var middleclone = middlebit.cloneNode(true);
+                 spannode.appendChild(middleclone);
+                 middlebit.parentNode.replaceChild(spannode, middlebit);
+                 skip = 1;
+             }
+         } else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+             for (var i = 0; i < node.childNodes.length; ++i) {
+                 i += innerHighlight(node.childNodes[i], pat);
+             }
+         }
+         return skip;
+     }
+     return this.length && pat && pat.length ? this.each(function () {
+         innerHighlight(this, pat.toUpperCase());
+     }) : this;
  };
