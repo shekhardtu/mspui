@@ -67,6 +67,23 @@
      });
  }
 
+ function keywordArrayToJson(searchArr, wordArr, valueFactor) {
+     for (var i = 0, len = wordArr.length; i < len; i++) {
+         if (wordArr[i] == '') {
+             break;
+         }
+         searchArr.push({
+             'word': wordArr[i],
+             'questionId': id,
+             'answerWordIndex': id + '-' + '0',
+             'valueFactor': valueFactor,
+             'sentenceIndex': i,
+             'searchArrayIndex': searchArr.length
+
+         });
+     }
+     return searchArr;
+ }
  // keywords Build functions 
  function splittingInWordsArray(mData) {
      var tempObj = {};
@@ -76,20 +93,7 @@
              return true;
          });
 
-         for (var i = 0, len = wordArr.length; i < len; i++) {
-             if (wordArr[i] == '') {
-                 break;
-             }
-             searchArr.push({
-                 'word': wordArr[i],
-                 'questionId': id,
-                 'answerWordIndex': id + '-' + '0',
-                 'valueFactor': 0.2,
-                 'sentenceIndex': i,
-                 'searchArrayIndex': searchArr.length
-
-             });
-         }
+         searchArr = keywordArrayToJson(searchArr, wordArr, 0.2);
 
          for (var j = 0, jlen = mData[id].answer.length; j < jlen; j++) {
              var answerWords = mData[id].answer[j].replace(/[^a-zA-Z0-9' ]/g, '').split(' ').filter(function () {
@@ -109,9 +113,9 @@
 
                  });
              }
-             delete answerWords;
+             wipeAnArray(answerWords);
          }
-         delete wordArr;
+         wipeAnArray(wordArr);
 
      };
      builtData = sortedByWord(searchArr);
@@ -132,6 +136,10 @@
          return b.match_score - a.match_score
      });
      return resultArr;
+ }
+
+ function wipeAnArray(array) {
+     return array = [];
  }
 
  var timeout;
@@ -176,14 +184,14 @@
              }
              return a;
          }, []);
-          processSearch(fiteredSearchKeywords);
+         processSearch(fiteredSearchKeywords);
      }, 200);
  });
 
  var processSearch = function (searchKeywords) {
-        if (searchKeywords.length <1) {
-             return false;
-         }
+     if (searchKeywords.length < 1) {
+         return false;
+     }
 
      // Searching and matching score [Start]
      var searchStartTime = performance.now();
@@ -339,10 +347,9 @@
          delete sDataJson[tempObj[d].questionId].wordOccurrence
 
      }
-     sequence = [];
+     wipeAnArray(sequence)
      return tempObj;
  }
-
 
 
  function buildDom(sortedSearchedInfo) {

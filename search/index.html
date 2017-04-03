@@ -65,6 +65,7 @@
             padding: 5px 10px;
             display: inline-block;
             box-sizing: border-box;
+            vertical-align: middle;
         }
 
         .search-form div:first-child {
@@ -113,7 +114,8 @@
         }
     </style>
     <div class="search-form">
-        <div class="col-3">
+        <div class="col-2">
+        <div class="col-2">
             <div class="col-1">
                 <label>Full Match</label>
                 <input type="number" class="full" />
@@ -126,7 +128,7 @@
                 <input type="number" class="partial" />
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-2">
             <div class="col-1">
                 <label>Unique Match</label>
                 <input type="number" class="unique" />
@@ -139,17 +141,20 @@
                 <input type="number" class="repeat" />
             </div>
         </div>
-        <div class="col-3">
+        </div>
+        <div class="col-2">
             <div class="col-1">
-                <label>In Sequence</label>
-                <input type="number" class="sequence" />
-            </div>
-            <div class="col-1">
-                and
-            </div>
-            <div class="col-1">
-                <label>Case Sensitive Match</label>
-                <input type="number" class="case_sensitive" />
+                <div class="col-3">
+                    <label>In Sequence</label>
+                    <input type="number" class="sequence" />
+                </div>
+                <div class="col-3">
+                    and
+                </div>
+                <div class="col-3">
+                    <label>Case Sensitive Match</label>
+                    <input type="number" class="case_sensitive" />
+                </div>
             </div>
         </div>
         <div class="col-1">
@@ -176,4 +181,5 @@
     <script src="jquery-3.1.1.min.js"></script>
     <script src="js/qna-search.js"></script>
 </body>
+
 </html>
